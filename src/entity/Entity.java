@@ -2,6 +2,8 @@ package entity;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -73,11 +75,14 @@ public class Entity {
 	// ADDED-ELLA
 	public int typeChapter;
 	public int typeDifficulty;
+	public int answerIndex = -1;
+	
 	// Chapter constants
 	public final int chapter1 = 1;
 	public final int chapter2 = 2;
 	public final int chapter3 = 3;
 	public final int chapter4 = 4;
+	
 	// Difficulty constants
 	public final int easy = 0;
 	public final int hard = 1;
@@ -290,6 +295,18 @@ public class Entity {
 				break;
 			} // switch (direction)
 		
+		// In Entity's draw(Graphics2D g2):
+		if (type == 2) { // or however you distinguish
+		    String num = Integer.toString(this.answerIndex + 1);
+		    g2.setColor(Color.WHITE);
+		    g2.setFont(new Font("Arial", Font.BOLD, 18));
+		    FontMetrics fm = g2.getFontMetrics();
+		    int tx = screenX + (gp.tileSize - fm.stringWidth(num))/2;
+		    int ty = screenY + gp.tileSize/2;
+		    g2.drawString(num, tx, ty);
+		}
+		
+		
 		// Monster HP bar
 		if(type == 2 && hpBarOn == true) {
 			
@@ -468,7 +485,4 @@ public class Entity {
 		}
 		return index;
 	}
-	
-	
-	
 }
