@@ -4,6 +4,9 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Random;
+
 import javax.swing.JPanel;
 
 import ai.PathFinder;
@@ -355,4 +358,58 @@ public class GamePanel extends JPanel implements Runnable {
         se.setVolumeByScaleAndAdjustment(adjustment);
         se.play();
     }
+ 
+//NEW CODES!!
+    public static final int MAP_WIDTH = 50;
+    public static final int MAP_HEIGHT = 50;
+
+    private Random rand = new Random();
+
+    // Ensures no duplicates
+    public java.util.List<Point> getRandomSpawnPositions(int count) {
+        HashSet<Point> positions = new HashSet<>();
+        while (positions.size() < count) {
+            int x = rand.nextInt(MAP_WIDTH);
+            int y = rand.nextInt(MAP_HEIGHT);
+            positions.add(new Point(x, y)); // customize as needed to avoid player spawn or obstacles
+        }
+        return new java.util.ArrayList<>(positions);
+    }
+    
+ // In GamePanel.java
+
+    private int[] monstersPerMap = {15, 20, 25, 30, 1}; // Boss = 1 in last map
+    private int[][] wavesPerMap = {
+        {5, 5, 5},
+        {7, 7, 6},
+        {9, 8, 8},
+        {7, 7, 7, 9},
+        {1}
+    };
+    
+    private int waveIndex = 0;
+    public void spawnMonsters(int waveNumber) {
+        int num = wavesPerMap[currentMap][waveNumber];
+        HashSet<Point> positions = new HashSet<>();
+
+        for (int i = 0; i < num; i++) {
+            Point pos;
+            do {
+                int x = rand.nextInt(MAP_WIDTH);
+                int y = rand.nextInt(MAP_HEIGHT);
+                pos = new Point(x, y);
+            } while (positions.contains(pos));
+            positions.add(pos);
+
+            // Choose entity type depending on map/wave if you want;
+            Entity m;
+            if (currentMap == 0) m = new monster.MON_GreenSlime(this); // Adjust as needed!
+            else m = new monster.MON_LHound(this);
+
+            m.worldX = pos.x * tileSize;
+            m.worldY = pos.y * tileSize;
+            m.answerIndex = i; // this ties monster to answer
+            monster[currentMap][i] = m;
+        }
+    }    
 }
