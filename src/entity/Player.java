@@ -41,8 +41,8 @@ public class Player extends Entity {
 		solidArea.width = 30; // collisionRectangle of player
 		solidArea.height = 30; // collisionRectangle of player
 		// ATTACK AREA
-//		attackArea.width = 36; //default claws in sword_normal
-//		attackArea.height = 36; //default claws in sword_normal
+		attackArea.width = 36; //default claws in sword_normal
+		attackArea.height = 36; //default claws in sword_normal
 		
 		setDefaultValues();
 
@@ -172,23 +172,31 @@ public class Player extends Entity {
 	public void getPlayerAttackImage() {
 		
 		if(currentWeapon.type == type_weapon) {
-			attackUp1 = setup("/playerCat/N_Attack", gp.tileSize, gp.tileSize);
-			attackUp2 = setup("/playerCat/N_Attack", gp.tileSize, gp.tileSize);
-			attackDown1 = setup("/playerCat/N_Attack", gp.tileSize, gp.tileSize);
-			attackDown2 = setup("/playerCat/N_Attack", gp.tileSize, gp.tileSize);
-			attackLeft1 = setup("/playerCat/N_Attack", gp.tileSize, gp.tileSize);
-			attackLeft2 = setup("/playerCat/N_Attack", gp.tileSize, gp.tileSize);
-			attackRight1 = setup("/playerCat/N_Attack", gp.tileSize, gp.tileSize);
-			attackRight2 = setup("/playerCat/N_Attack", gp.tileSize, gp.tileSize);				
+			attackUp1 = setup("/playerCat/cat_attack_up_1", gp.tileSize, gp.tileSize*2);
+			attackUp2 = setup("/playerCat/cat_attack_up_2", gp.tileSize, gp.tileSize*2);
+			attackDown1 = setup("/playerCat/cat_attack_down_1", gp.tileSize, gp.tileSize*2);
+			attackDown2 = setup("/playerCat/cat_attack_down_2", gp.tileSize, gp.tileSize*2);
+			attackLeft1 = setup("/playerCat/cat_attack_left_1", gp.tileSize*2, gp.tileSize);
+			attackLeft2 = setup("/playerCat/cat_attack_left_2", gp.tileSize*2, gp.tileSize);
+			attackRight1 = setup("/playerCat/cat_attack_right_1", gp.tileSize*2, gp.tileSize);
+			attackRight2 = setup("/playerCat/cat_attack_right_2", gp.tileSize*2, gp.tileSize);				
 		}
+		
+//		attackUp1 = setup("/playerCat/cat_attack_up_1", gp.tileSize, gp.tileSize*2;
+//		attackUp2 = setup("/playerCat/cat_attack_up_2", gp.tileSize, gp.tileSize*2);
+//		attackDown1 = setup("/playerCat/cat_attack_down_1", gp.tileSize, gp.tileSize*2);
+//		attackDown2 = setup("/playerCat/cat_attack_down_2", gp.tileSize, gp.tileSize*2);
+//		attackLeft1 = setup("/playerCat/cat_attack_left_1", gp.tileSize, gp.tileSize*2);
+//		attackLeft2 = setup("/playerCat/cat_attack_left_2", gp.tileSize, gp.tileSize*2);
+//		attackRight1 = setup("/playerCat/cat_attack_right_1", gp.tileSize, gp.tileSize*2);
+//		attackRight2 = setup("/playerCat/cat_attack_right_2", gp.tileSize, gp.tileSize*2);	
 
 	}
+//REMOVE SYSTEM.OUT
 	public void update() {
 
 		if(attacking == true) {
 			attacking();
-		    System.out.println("maxLife: " + maxLife);
-		    System.out.println("life: " + life);
 		}
 		
 		else if (keyH.upPressed == true || keyH.downPressed == true || 
@@ -384,8 +392,8 @@ public class Player extends Entity {
 				gp.npc[gp.currentMap][i].speak();
 //				gp.keyH.enterPressed = false; // 🔧 Prevents repeat calling
 			}
-			
-		}	
+		}
+		
 	}
 	public void contactMonster(int i) {
 		
@@ -432,17 +440,37 @@ public class Player extends Entity {
 	
 	// Returns damage (with crit + knowledge bonus)
 	public int calculateBattleDamage(Entity monster) {
-	    double multiplier = 1.0 + (getKnowledge() / 10.0) * 0.5;
-	    boolean isCrit = Math.random() < 0.5; // 50% crit chance
-	    if (isCrit) {
-	        multiplier *= 2;
-	    }
-	    int scaledAttack = (int)(getAttack() * multiplier);
-	    int damage = scaledAttack - monster.defense;
-	    if (damage < 0) damage = 0;
-	    return damage;
+		
+		
+		int damage = getAttack();
+		return damage;
+		
+//	    double multiplier = 1.0 + (getKnowledge() / 10.0) * 0.5;
+//	    boolean isCrit = Math.random() < 0.5; // 50% crit chance
+//	    if (isCrit) {
+//	        multiplier *= 2;
+//	    }
+//	    int scaledAttack = (int)(getAttack() * multiplier);
+//	    int damage = scaledAttack - monster.defense;
+//	    if (damage < 0) damage = 0;
+//	    return damage;
 	}
 	public void damageMonster(int i) {
+		
+		// Example for inside Player.java (add inside your attack or monster-hit logic):
+//		for (int ii = 0; ii < gp.monster[gp.currentMap].length; ii++) {
+//		    Entity targetMonster = gp.monster[gp.currentMap][i];
+//		    if (targetMonster != null && targetMonster.alive /* AND player is attacking this monster */) {
+//		        if (targetMonster.answerIndex == gp.ui.quizIndex) {
+//		            targetMonster.alive = false;
+//		            gp.monster[gp.currentMap][i] = null;
+//		            // You can spawn the next wave here if needed:
+//		            // gp.aSetter.spawnNextWave(gp);
+//		            break;
+//		        }
+//		    }
+//		}
+		
 	    if (i != 999 && gp.monster[gp.currentMap][i] != null) {            
 	        Entity monster = gp.monster[gp.currentMap][i];
 	        if (!monster.invincible) {
@@ -451,14 +479,14 @@ public class Player extends Entity {
 	            int damage = calculateBattleDamage(monster);
 
 	            monster.life -= damage;
-	            gp.ui.addMessage(damage + " damage!");
+	            System.out.println(damage + " damage!");
 	            monster.invincible = true;
 	            monster.damageReaction();
 
 	            if (monster.life <= 0) {
 	                monster.dying = true;
-	                gp.ui.addMessage("You killed a " + monster.name + "!");
-	                gp.ui.addMessage("Exp + " + monster.exp);
+	                System.out.println("You killed a " + monster.name + "!");
+	                System.out.println("Exp + " + monster.exp);
 	                exp += monster.exp;
 	                checkLevelUp();
 	            }
@@ -573,6 +601,8 @@ public class Player extends Entity {
 	public void draw(Graphics2D g2) {
 
 		BufferedImage image = null;		
+		int tempScreenX = screenX;
+		int tempScreenY = screenY;
 		
 		switch (direction) {
 		case "up":
@@ -581,6 +611,7 @@ public class Player extends Entity {
 				if (spriteNum == 2) {image = up2;} 
 			}
 			if (attacking == true) {
+				tempScreenY = screenY - gp.tileSize;
 				if (spriteNum == 1) {image = attackUp1;}
 				if (spriteNum == 2) {image = attackUp2;} 				
 			}
@@ -601,6 +632,7 @@ public class Player extends Entity {
 				if (spriteNum == 2) {image = left2;}			
 			}
 			if (attacking == true) {
+				tempScreenX = screenX - gp.tileSize;
 				if (spriteNum == 1) {image = attackLeft1;}
 				if (spriteNum == 2) {image = attackLeft2;}
 			}
@@ -622,7 +654,7 @@ public class Player extends Entity {
 			
 		}
 		
-		g2.drawImage(image, screenX, screenY, null);
+		g2.drawImage(image, tempScreenX, tempScreenY, null);
 		
 		//RESET ALPHA
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f)); //no transparent
